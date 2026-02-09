@@ -1,0 +1,24 @@
+name: Deploy to Koyeb
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Deploy to Koyeb
+        uses: koyeb/action-git-deploy@v2
+        with:
+          app-name: difftastic-bot
+          service-name: web
+          git-branch: main
+          git-builder: dockerfile
+          ports: "3000:http"
+          env: |
+            APP_ID=${{ secrets.APP_ID }}
+            WEBHOOK_SECRET=${{ secrets.WEBHOOK_SECRET }}
+            PRIVATE_KEY_PATH=/secrets/private-key.pem
