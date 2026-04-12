@@ -10,8 +10,7 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-// Load GitHub App Private Key (needed for token generation)
-const privateKey = fs.readFileSync(process.env.PRIVATE_KEY_PATH || './private-key.pem', 'utf8');
+const privateKey = process.env.PRIVATE_KEY || fs.readFileSync('./private-key.pem', 'utf8');
 const appId = process.env.APP_ID;
 
 const githubApp = new App({
