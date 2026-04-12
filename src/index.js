@@ -10,7 +10,12 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-const privateKey = process.env.PRIVATE_KEY || fs.readFileSync('./private-key.pem', 'utf8');
+const privateKey = process.env.PRIVATE_KEY
+  ? process.env.PRIVATE_KEY
+      .replace('-----BEGIN RSA PRIVATE KEY----- ', '-----BEGIN RSA PRIVATE KEY-----\n')
+      .replace(' -----END RSA PRIVATE KEY-----', '\n-----END RSA PRIVATE KEY-----')
+      .replace(/ /g, '\n')
+  : fs.readFileSync('./private-key.pem', 'utf8');
 const appId = process.env.APP_ID;
 
 const githubApp = new App({
