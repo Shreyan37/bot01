@@ -10,11 +10,8 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 
-const privateKey = process.env.PRIVATE_KEY
-  ? process.env.PRIVATE_KEY
-      .replace('-----BEGIN RSA PRIVATE KEY----- ', '-----BEGIN RSA PRIVATE KEY-----\n')
-      .replace(' -----END RSA PRIVATE KEY-----', '\n-----END RSA PRIVATE KEY-----')
-      .replace(/ /g, '\n')
+const privateKey = process.env.PRIVATE_KEY_BASE64
+  ? Buffer.from(process.env.PRIVATE_KEY_BASE64, 'base64').toString('utf8')
   : fs.readFileSync('./private-key.pem', 'utf8');
 const appId = process.env.APP_ID;
 
