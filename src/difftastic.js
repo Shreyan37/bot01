@@ -38,7 +38,7 @@ export async function analyzeWithDifftastic(pr, repo, token) {
     });
 
     // Run Difftastic
-    const output = execSync(`difft --display=inline ${baseDir} ${headDir} --color=always`, {
+    const output = execSync(`difft --display=inline ${baseDir} ${headDir} --color=never`, {
       encoding: 'utf8',
       timeout: 30000,
       maxBuffer: 10 * 1024 * 1024 // 10MB buffer for large diffs
