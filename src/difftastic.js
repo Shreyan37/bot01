@@ -84,7 +84,7 @@ function parseStructuralChanges(jsonOutput) {
         for (const chunk of file.chunks) {
           for (const line of chunk) {
             if (line.rhs && line.rhs.line_number) {
-              structuralLines.add(line.rhs.line_number);
+              structuralLines.add(line.rhs.line_number + 1);
             }
           }
         }
