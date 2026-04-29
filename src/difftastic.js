@@ -61,7 +61,7 @@ export async function analyzeWithDifftastic(pr, repo, token) {
       result += `\n\n## Change Summary\n\n`;
       result += `Changes on line numbers ${structuralLines.join(', ')} might lead to change in the runtime behaviour`;
     }
-
+    result += `\n\n*PS:reconsight is in its alpha stage and might make mistakes,we're open to all suggestions*\n\n`;
     return result;
 
   } catch (error) {
