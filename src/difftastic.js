@@ -2,7 +2,7 @@ import fs from 'fs';
 import { execSync } from 'child_process';
 
 export async function analyzeWithDifftastic(pr, repo, token) {
-  const tempDir = `/tmp/difftastic-${pr.number}-${Date.now()}`;  // ← fixed
+  const tempDir = `/tmp/difftastic-${pr.number}-${Date.now()}`;
   const baseDir = `${tempDir}/base`;
   const headDir = `${tempDir}/head`;
 
@@ -11,7 +11,6 @@ export async function analyzeWithDifftastic(pr, repo, token) {
     fs.mkdirSync(headDir, { recursive: true });
 
     const getAuthUrl = (url) => url.replace('https://', `https://x-access-token:${token}@`);
-
     const baseRepoUrl = getAuthUrl(repo.clone_url);
 
     const isFork = pr.head.repo.full_name !== repo.full_name;
@@ -27,19 +26,29 @@ export async function analyzeWithDifftastic(pr, repo, token) {
       timeout: 60000
     });
 
-    const jsonOutput = execSync(`difft --display json ${baseDir} ${headDir}`, {
-      encoding: 'utf8',
-      timeout: 30000,
-      maxBuffer: 10 * 1024 * 1024
-    });
+    const difftasticEnv = { ...process.env, DFT_UNSTABLE: 'yes' }; // ← key fix
 
+    // Run inline diff first (always works, no unstable flag needed)
     const inlineOutput = execSync(`difft --display inline ${baseDir} ${headDir}`, {
       encoding: 'utf8',
       timeout: 30000,
-      maxBuffer: 10 * 1024 * 1024
+      maxBuffer: 10 * 1024 * 1024,
+      env: difftasticEnv
     });
 
-    const structuralLines = parseStructuralChanges(jsonOutput);
+    // Try JSON separately — don't let it kill the whole function
+    let structuralLines = [];
+    try {
+      const jsonOutput = execSync(`difft --display json ${baseDir} ${headDir}`, {
+        encoding: 'utf8',
+        timeout: 30000,
+        maxBuffer: 10 * 1024 * 1024,
+        env: difftasticEnv  // ← passes DFT_UNSTABLE=yes
+      });
+      structuralLines = parseStructuralChanges(jsonOutput);
+    } catch (jsonError) {
+      console.error('JSON diff failed, skipping structural summary:', jsonError.message);
+    }
 
     const maxLength = 50000;
     const finalOutput = inlineOutput.length > maxLength
