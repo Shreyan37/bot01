@@ -47,7 +47,7 @@ async function handlePullRequest({ payload }) {
         repository.owner.login, 
         repository.name, 
         pull_request.number, 
-        `## 🧠 Structural Diff\n\n${diffBody}\n\n---\n*Powered by PRNotifier1*`
+        `## Diff\n\n${diffBody}\n\n---\n`
       );
       console.log(`✅ Commented on PR #${pull_request.number}`);
     }
