@@ -58,8 +58,8 @@ export async function analyzeWithDifftastic(pr, repo, token) {
     let result = `\`\`\`diff\n${finalOutput}\n\`\`\``;
 
     if (structuralLines.length > 0) {
-      result += `\n\n## 🏗️ Structural Change Summary\n\n`;
-      result += `Changes on line numbers ${structuralLines.join(', ')} have structural changes`;
+      result += `\n\n## Change Summary\n\n`;
+      result += `Changes on line numbers ${structuralLines.join(', ')} might lead to change in the runtime behaviour`;
     }
 
     return result;
